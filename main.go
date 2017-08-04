@@ -27,8 +27,8 @@ import (
 	"syscall"
 
 	"github.com/hpcloud/tail"
-	"github.com/martin-helmich/prometheus-nginxlog-exporter/config"
-	"github.com/martin-helmich/prometheus-nginxlog-exporter/discovery"
+	"github.com/adup-tech/prometheus-nginxlog-exporter/config"
+	"github.com/adup-tech/prometheus-nginxlog-exporter/discovery"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/satyrius/gonx"
 )
