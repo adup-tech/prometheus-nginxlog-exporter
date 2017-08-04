@@ -1,6 +1,6 @@
 package discovery
 
-import "github.com/martin-helmich/prometheus-nginxlog-exporter/config"
+import "github.com/adup-tech/prometheus-nginxlog-exporter/config"
 import "github.com/hashicorp/consul/api"
 
 type ConsulRegistrator struct {

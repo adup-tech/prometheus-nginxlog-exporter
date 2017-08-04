@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/martin-helmich/prometheus-nginxlog-exporter",
+	"ImportPath": "github.com/adup-tech/prometheus-nginxlog-exporter",
 	"GoVersion": "go1.5",
 	"GodepVersion": "v74",
 	"Deps": [
