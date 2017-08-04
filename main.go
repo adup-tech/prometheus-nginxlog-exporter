@@ -23,6 +23,7 @@ import (
 	"os"
 	"os/signal"
 	"strings"
+	"regexp"
 	"syscall"
 
 	"github.com/hpcloud/tail"
@@ -43,7 +44,7 @@ type Metrics struct {
 
 // Init initializes a metrics struct
 func (m *Metrics) Init(cfg *config.NamespaceConfig) {
-	labels := []string{"method", "status"}
+	labels := []string{"method", "status", "path"}
 	labels = append(labels, cfg.LabelNames()...)
 
 	m.countTotal = prometheus.NewCounterVec(prometheus.CounterOpts{
@@ -135,6 +136,14 @@ func main() {
 			metrics := Metrics{}
 			metrics.Init(&nsCfg)
 
+			pathStrings := []string{}
+			for _, path := range nsCfg.PathLabels {
+				pathStrings = append(pathStrings, regexp.QuoteMeta(path))
+			}
+
+			regex := regexp.MustCompile(strings.Join(pathStrings, "|"))
+			_ = regex
+
 			for _, f := range nsCfg.SourceFiles {
 				t, err := tail.TailFile(f, tail.Config{
 					Follow: true,
@@ -147,10 +156,10 @@ func main() {
 
 				go func() {
 					staticLabelValues := nsCfg.LabelValues()
-					labelValues := make([]string, len(staticLabelValues)+2)
+					labelValues := make([]string, len(staticLabelValues) + 3)
 
 					for i := range staticLabelValues {
-						labelValues[i+2] = staticLabelValues[i]
+						labelValues[i + 3] = staticLabelValues[i]
 					}
 
 					for line := range t.Lines {
@@ -162,10 +171,19 @@ func main() {
 
 						labelValues[0] = "UNKNOWN"
 						labelValues[1] = "0"
+						labelValues[2] = "UNKNOWN"
 
 						if request, err := entry.Field("request"); err == nil {
 							f := strings.Split(request, " ")
 							labelValues[0] = f[0]
+
+							if len(nsCfg.PathLabels) > 0 {
+								match := regex.FindString(f[1])
+
+								if len(match) > 0 {
+									labelValues[2] = match
+								}
+							}
 						}
 
 						if s, err := entry.Field("status"); err == nil {

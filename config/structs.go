@@ -44,6 +44,7 @@ type NamespaceConfig struct {
 	SourceFiles []string          `hcl:"source_files"`
 	Format      string            `hcl:"format"`
 	Labels      map[string]string `hcl:"labels"`
+	PathLabels  []string          `hcl:"path_labels"`
 }
 
 // LabelNames exports the names of all known additional labels
