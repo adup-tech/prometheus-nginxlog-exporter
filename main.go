@@ -38,10 +38,10 @@ import (
 // Metrics is a struct containing pointers to all metrics that should be
 // exposed to Prometheus
 type Metrics struct {
-	countTotal      *promauto.CounterVec
-	bytesTotal      *promauto.CounterVec
-	upstreamSeconds *promauto.SummaryVec
-	responseSeconds *promauto.SummaryVec
+	countTotal      *prometheus.CounterVec
+	bytesTotal      *prometheus.CounterVec
+	upstreamSeconds *prometheus.SummaryVec
+	responseSeconds *prometheus.SummaryVec
 }
 
 // Init initializes a metrics struct
