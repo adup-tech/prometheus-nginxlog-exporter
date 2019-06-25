@@ -30,6 +30,8 @@ import (
 	"github.com/adup-tech/prometheus-nginxlog-exporter/config"
 	"github.com/adup-tech/prometheus-nginxlog-exporter/discovery"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+    "github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/satyrius/gonx"
 )
 
