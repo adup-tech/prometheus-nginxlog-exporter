@@ -38,10 +38,10 @@ import (
 // Metrics is a struct containing pointers to all metrics that should be
 // exposed to Prometheus
 type Metrics struct {
-	countTotal      *prometheus.CounterVec
-	bytesTotal      *prometheus.CounterVec
-	upstreamSeconds *prometheus.SummaryVec
-	responseSeconds *prometheus.SummaryVec
+	countTotal      *promauto.CounterVec
+	bytesTotal      *promauto.CounterVec
+	upstreamSeconds *promauto.SummaryVec
+	responseSeconds *promauto.SummaryVec
 }
 
 // Init initializes a metrics struct
@@ -49,25 +49,25 @@ func (m *Metrics) Init(cfg *config.NamespaceConfig) {
 	labels := []string{"method", "status", "path"}
 	labels = append(labels, cfg.LabelNames()...)
 
-	m.countTotal = prometheus.NewCounterVec(prometheus.CounterOpts{
+	m.countTotal = promauto.NewCounterVec(prometheus.CounterOpts{
 		Namespace: cfg.Name,
 		Name:      "http_response_count_total",
 		Help:      "Amount of processed HTTP requests",
 	}, labels)
 
-	m.bytesTotal = prometheus.NewCounterVec(prometheus.CounterOpts{
+	m.bytesTotal = promauto.NewCounterVec(prometheus.CounterOpts{
 		Namespace: cfg.Name,
 		Name:      "http_response_size_bytes",
 		Help:      "Total amount of transferred bytes",
 	}, labels)
 
-	m.upstreamSeconds = prometheus.NewSummaryVec(prometheus.SummaryOpts{
+	m.upstreamSeconds = promauto.NewSummaryVec(prometheus.SummaryOpts{
 		Namespace: cfg.Name,
 		Name:      "http_upstream_time_seconds",
 		Help:      "Time needed by upstream servers to handle requests",
 	}, labels)
 
-	m.responseSeconds = prometheus.NewSummaryVec(prometheus.SummaryOpts{
+	m.responseSeconds = promauto.NewSummaryVec(prometheus.SummaryOpts{
 		Namespace: cfg.Name,
 		Name:      "http_response_time_seconds",
 		Help:      "Time needed by NGINX to handle requests",
@@ -214,6 +214,6 @@ func main() {
 	listenAddr := fmt.Sprintf("%s:%d", cfg.Listen.Address, cfg.Listen.Port)
 	fmt.Printf("running HTTP server on address %s\n", listenAddr)
 
-	http.Handle("/metrics", prometheus.Handler())
+	http.Handle("/metrics", promhttp.Handler())
 	http.ListenAndServe(listenAddr, nil)
 }
