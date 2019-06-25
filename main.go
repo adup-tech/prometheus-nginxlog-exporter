@@ -46,6 +46,8 @@ type Metrics struct {
 
 // Init initializes a metrics struct
 func (m *Metrics) Init(cfg *config.NamespaceConfig) {
+	reg := prometheus.NewRegistry()
+
 	labels := []string{"method", "status", "path"}
 	labels = append(labels, cfg.LabelNames()...)
 
@@ -73,10 +75,10 @@ func (m *Metrics) Init(cfg *config.NamespaceConfig) {
 		Help:      "Time needed by NGINX to handle requests",
 	}, labels)
 
-	prometheus.MustRegister(m.countTotal)
-	prometheus.MustRegister(m.bytesTotal)
-	prometheus.MustRegister(m.upstreamSeconds)
-	prometheus.MustRegister(m.responseSeconds)
+	reg.MustRegister(m.countTotal)
+	reg.MustRegister(m.bytesTotal)
+	reg.MustRegister(m.upstreamSeconds)
+	reg.MustRegister(m.responseSeconds)
 }
 
 func main() {
